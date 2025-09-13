@@ -89,7 +89,7 @@
   <body>
     <h1>ค้นหาศูนย์บริการใกล้ที่สุด</h1>
     <div class="card">
-      <label for="district">กรอกชื่ออำเภอ:</label><br /><br />
+      <label for="district">กรอกชื่ออำเภอที่คุณอยู่ : </label><br /><br />
       <input type="text" id="district" placeholder="เช่น บางบอน, พญาไท" />
       <button onclick="findCenter()">ค้นหา</button>
 
@@ -373,7 +373,7 @@
               <p>${centerInfo.address}</p>
               <p style="color:green; font-weight:bold;">✓ ศูนย์นี้ตรงกับอำเภอที่ค้นหา</p>
               <button class="map-button" onclick="window.open('${googleMapsUrl}', '_blank')">
-                📍 เปิดใน Google Maps
+              เปิดใน Google Maps
               </button>
             </div>
           `;
