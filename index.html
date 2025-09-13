@@ -2,6 +2,7 @@
 <html lang="th">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ค้นหาศูนย์ใกล้ที่สุด</title>
     <style>
       body {
@@ -49,6 +50,13 @@
       button:hover {
         background: #0056b3;
       }
+      .map-button {
+        background: #17a2b8;
+        margin-top: 10px; /* เพิ่มระยะห่างด้านบน */
+      }
+      .map-button:hover {
+        background: #117a8b;
+      }
       .result {
         margin-top: 20px;
         font-size: 18px;
@@ -56,6 +64,21 @@
         background: #e9f7ef;
         border: 1px solid #c3e6cb;
         border-radius: 8px;
+      }
+
+      /* 📌 CSS สำหรับหน้าจอเล็ก (Responsive) */
+      @media (max-width: 600px) {
+        body {
+          padding: 15px; /* ลด padding ของ body */
+        }
+        input {
+          width: 100%; /* ทำให้ input กว้างเต็มจอ */
+          margin-right: 0;
+          margin-bottom: 10px; /* เพิ่มระยะห่างด้านล่าง */
+        }
+        button, .map-button {
+          width: 100%; /* ทำให้ปุ่มกว้างเต็มจอ */
+        }
       }
     </style>
   </head>
@@ -71,8 +94,8 @@
     </div>
 
     <script>
-      // 📌 ตัวอย่าง mapping ย่อ ๆ
       const mapping = [
+        // ... (ข้อมูล mapping ทั้งหมดเหมือนเดิม) ...
         { district: "กบินทร์บุรี", center: "จักรีนฤบดินทร์", distance: 115.86 },
         { district: "กรงปินัง", center: "จักรีนฤบดินทร์", distance: 783.99 },
         {
@@ -303,7 +326,6 @@
         },
       ];
 
-      // 📌 ข้อมูลศูนย์ทั้ง 4
       const centers = {
         "รามาธิบดี (พญาไท)": {
           address: "270 ถนนพระรามที่ 6 แขวงทุ่งพญาไท เขตราชเทวี กรุงเทพมหานคร 10400",
@@ -322,28 +344,33 @@
       function findCenter() {
         const input = document.getElementById("district").value.trim();
         const result = mapping.find((item) => item.district === input);
-
         const output = document.getElementById("output");
         const centersDiv = document.getElementById("centers");
 
         if (result) {
-          // แสดงผลการค้นหาอำเภอ
+          const centerInfo = centers[result.center];
+          const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+            centerInfo.address
+          )}`;
+
           output.style.display = "block";
           output.innerHTML = `
-          ✅ อำเภอ <b>${result.district}</b><br>
-          ศูนย์ใกล้ที่สุด: <b>${result.center}</b><br>
-          ระยะทาง: <b>${result.distance.toFixed(2)} กม.</b>
-        `;
+            ✅ อำเภอ <b>${result.district}</b><br>
+            ศูนย์ใกล้ที่สุด: <b>${result.center}</b><br>
+            ระยะทาง: <b>${result.distance.toFixed(2)} กม.</b>
+          `;
 
           centersDiv.style.display = "grid";
           centersDiv.innerHTML = `
-          <div class="card" style="border: 2px solid #28a745;">
-            <img src="${result.center}.png" " style="width:60%;">
-            <h3>${result.center}</h3>
-            <p>${centers[result.center].address}</p>
-            <p style="color:green; font-weight:bold;">✓ ศูนย์นี้ตรงกับอำเภอที่ค้นหา</p>
-          </div>
-        `;
+            <div class="card" style="border: 2px solid #28a745;">
+              <h3>${result.center}</h3>
+              <p>${centerInfo.address}</p>
+              <p style="color:green; font-weight:bold;">✓ ศูนย์นี้ตรงกับอำเภอที่ค้นหา</p>
+              <button class="map-button" onclick="window.open('${googleMapsUrl}', '_blank')">
+                📍 เปิดใน Google Maps
+              </button>
+            </div>
+          `;
         } else {
           output.style.display = "block";
           output.innerHTML = "❌ ไม่พบข้อมูลอำเภอนี้ในระบบ";
